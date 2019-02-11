@@ -1,4 +1,11 @@
 {
-  "presets": ["es2015", "stage-0", "react"],
-  "plugins": ["material-ui"]
+  "plugins": [
+    "@babel/plugin-proposal-export-default-from"
+  ],
+  "presets": [
+    "@babel/preset-react",
+    [
+      "@babel/preset-env"
+    ]
+  ]
 }

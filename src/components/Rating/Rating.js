@@ -1,135 +1,139 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { IconButton } from 'material-ui'
-import { colors } from 'material-ui/styles'
-import { ToggleStar, ToggleStarBorder } from 'material-ui/svg-icons'
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import IconButton from '@material-ui/core/IconButton';
+import orange from '@material-ui/core/colors/orange';
+import grey from '@material-ui/core/colors/grey';
+import ToggleStar from '@material-ui/icons/Star';
+import ToggleStarBorder from '@material-ui/icons/StarBorder';
+import ToggleStarHalf from '@material-ui/icons/StarHalf';
+import { makeStyles } from '@material-ui/styles';
+import cx from 'clsx';
+import Tooltip from '@material-ui/core/Tooltip';
 
-const styles = {
+const useStyles = makeStyles({
+  root: {
+    padding: 0,
+    width: 'auto',
+    height: 'auto',
+  },
+  tooltip: {
+    display: 'inline-block',
+  },
+  icon: {
+    color: orange.A700,
+  },
   disabled: {
+    color: grey[900],
+  },
+  disabledPointer: {
     pointerEvents: 'none'
   }
-}
+});
 
-export default class Rating extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      hoverValue: props.value
-    }
-  }
+const Rating = ({value, className, itemStyle, disabled, onChange, readOnly, max, ...props}) => {
+  const [hoverValue, setHoverValue] = useState(value);
+  const classes = useStyles();
 
-  renderIcon (i) {
-    const filled = i <= this.props.value
-    const hovered = i <= this.state.hoverValue
+  const renderIcon = i => {
+    const filled = i <= Math.ceil(value);
+    const hovered = i <= Math.ceil(hoverValue);
+    const half = (i === Math.ceil(value) && i > Math.floor(value));
 
     if ((hovered && !filled) || (!hovered && filled)) {
-      return this.props.iconHoveredRenderer ? this.props.iconHoveredRenderer({
-        ...this.props,
+      return props.iconHoveredRenderer ? props.iconHoveredRenderer({
+        ...props,
         index: i
-      }) : this.props.iconHovered
-    } else if (filled) {
-      return this.props.iconFilledRenderer ? this.props.iconFilledRenderer({
-        ...this.props,
+      }) : (props.iconHovered || <ToggleStarBorder classes={{root: cx(props.iconClass, classes.icon)}}/>);
+    } else if (filled && !half) {
+      return props.iconFilledRenderer ? props.iconFilledRenderer({
+        ...props,
         index: i
-      }) : this.props.iconFilled
+      }) : (props.iconFilled || <ToggleStar classes={{root: cx(props.iconClass, classes.icon)}}/>);
+    } else if (filled && half) {
+      return props.iconHalfRenderer ? props.iconHalfRenderer({
+        ...props,
+        index: i
+      }) : (props.iconHalf || <ToggleStarHalf classes={{root: cx(props.iconClass, classes.icon)}}/>);
     } else {
-      return this.props.iconNormalRenderer ? this.props.iconNormalRenderer({
-        ...this.props,
+      return props.iconNormalRenderer ? props.iconNormalRenderer({
+        ...props,
         index: i
-      }) : this.props.iconNormal
+      }) : (props.iconNormal || <ToggleStarBorder classes={{root: cx(props.iconClass, classes.disabled)}}/>);
     }
-  }
+  };
 
-  render () {
-    const {
-      disabled,
-      iconFilled,
-      iconHovered,
-      iconNormal,
-      tooltip,
-      tooltipRenderer,
-      tooltipPosition,
-      tooltipStyles,
-      iconFilledRenderer,
-      iconHoveredRenderer,
-      iconNormalRenderer,
-      itemStyle,
-      itemClassName,
-      itemIconStyle,
-      max,
-      onChange,
-      readOnly,
-      style,
-      value,
-      ...other
-    } = this.props
-
-    const rating = []
-
+  const getStars = React.useMemo(() => () => {
+    let tmp = [];
     for (let i = 1; i <= max; i++) {
-      rating.push(
+      tmp.push(
         <IconButton
           key={i}
-          className={itemClassName}
+          classes={{
+            root: cx(classes.root, props.className),
+          }}
           disabled={disabled}
-          iconStyle={itemIconStyle}
           style={itemStyle}
-          tooltip={tooltip || tooltipRenderer ? tooltipRenderer({index: i, ...this.props}) : null}
-          tooltipPosition={tooltipPosition}
-          tooltipStyles={tooltipStyles}
-          onMouseEnter={() => this.setState({hoverValue: i})}
-          onMouseLeave={() => this.setState({hoverValue: value})}
+          onMouseEnter={() => setHoverValue(i)}
+          onMouseLeave={() => setHoverValue(value)}
           onClick={() => {
             if (!readOnly && onChange) {
               onChange(i)
             }
           }}
         >
-          {this.renderIcon(i)}
+          {renderIcon(i)}
         </IconButton>
       )
     }
+    return tmp;
+  }, [max, disabled, itemStyle, value, readOnly, className]);
 
-    return (
-      <div
-        style={this.props.disabled || this.props.readOnly ? {...styles.disabled, ...this.props.style} : this.props.style}
-        {...other}
-      >
-        {rating}
+  const rating = getStars();
+
+  return (
+    <Tooltip id='tooltip-icon' classes={{tooltip: cx(classes.tooltip, props.containerClass)}} title={hoverValue || value} placement={props.tooltipPosition}>
+      <div>
+        <div className={cx({[classes.disabledPointer]: disabled || readOnly})} style={props.style}>
+          {rating}
+        </div>
       </div>
-    )
-  }
-}
+    </Tooltip>
+  )
+};
 
 Rating.defaultProps = {
   disabled: false,
-  iconFilled: <ToggleStar color={colors.orange500} />,
-  iconHovered: <ToggleStarBorder color={colors.orange500} />,
-  iconNormal: <ToggleStarBorder color={colors.grey300} />,
-  tooltipPosition: 'bottom-center',
+  tooltipPosition: 'bottom',
   max: 5,
   readOnly: false,
-  value: 0
-}
+  value: 0,
+  fractions: 1,
+};
 
 Rating.propTypes = {
+  className: PropTypes.string,
+  containerClass: PropTypes.string,
   disabled: PropTypes.bool,
   iconFilled: PropTypes.node,
   iconHovered: PropTypes.node,
   iconNormal: PropTypes.node,
+  iconHalf: PropTypes.node,
   tooltip: PropTypes.node,
   tooltipRenderer: PropTypes.func,
   tooltipPosition: PropTypes.string,
   tooltipStyles: PropTypes.object,
   iconFilledRenderer: PropTypes.func,
+  iconHalfRenderer: PropTypes.func,
   iconHoveredRenderer: PropTypes.func,
   iconNormalRenderer: PropTypes.func,
   itemStyle: PropTypes.object,
-  itemClassName: PropTypes.object,
-  itemIconStyle: PropTypes.object,
+  iconClass: PropTypes.string,
   max: PropTypes.number,
   onChange: PropTypes.func,
   readOnly: PropTypes.bool,
   style: PropTypes.object,
-  value: PropTypes.number
-}
+  value: PropTypes.number,
+  fractions: PropTypes.number,
+};
+
+export default React.memo(Rating);
