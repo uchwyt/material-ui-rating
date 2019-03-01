@@ -136,4 +136,4 @@ Rating.propTypes = {
   fractions: PropTypes.number,
 };
 
-export default React.memo(Rating);
+export default Rating;

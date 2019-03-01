@@ -3,7 +3,7 @@
  */
 import renderer from 'react-test-renderer';
 import React from 'react';
-import Rating from '../../../src/components/Rating/Rating';
+import Rating from '../../../src/Rating';
 
 describe('Rating', function () {
   const handleChange = () => true;
