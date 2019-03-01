@@ -5,11 +5,8 @@
   "main": "lib/index.js",
   "scripts": {
     "build": "babel src -d lib",
-    "prepublish": "babel src -d lib",
-    "styleguide": "styleguidist server",
-    "styleguide:build": "styleguidist build",
-    "publish-docs": "npm run styleguide:build && npm run gh-pages",
-    "gh-pages": "./node_modules/.bin/gh-pages -d styleguide"
+    "prepare": "babel src -d lib",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
