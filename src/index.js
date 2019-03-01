@@ -1,1 +1,1 @@
-export Rating from './components/Rating'
+module.exports = require('./Rating.js');
