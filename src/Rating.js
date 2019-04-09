@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import IconButton from '@material-ui/core/IconButton';
 import orange from '@material-ui/core/colors/orange';
@@ -34,7 +34,7 @@ const Rating = ({value, className, itemStyle, disabled, onChange, readOnly, max,
   const [hoverValue, setHoverValue] = useState(value);
   const classes = useStyles();
 
-  const renderIcon = i => {
+  const renderIcon = useCallback(i => {
     const filled = i <= Math.ceil(value);
     const hovered = i <= Math.ceil(hoverValue);
     const half = (i === Math.ceil(value) && i > Math.floor(value));
@@ -60,9 +60,9 @@ const Rating = ({value, className, itemStyle, disabled, onChange, readOnly, max,
         index: i
       }) : (props.iconNormal || <ToggleStarBorder classes={{root: cx(props.iconClass, classes.disabled)}}/>);
     }
-  };
+  }, [value, hoverValue, props]);
 
-  const getStars = React.useMemo(() => () => {
+  const rating = React.useMemo(() => {
     let tmp = [];
     for (let i = 1; i <= max; i++) {
       tmp.push(
@@ -71,6 +71,7 @@ const Rating = ({value, className, itemStyle, disabled, onChange, readOnly, max,
           classes={{
             root: cx(classes.root, props.className),
           }}
+          href='#'
           disabled={disabled}
           style={itemStyle}
           onMouseEnter={() => setHoverValue(i)}
@@ -86,9 +87,7 @@ const Rating = ({value, className, itemStyle, disabled, onChange, readOnly, max,
       )
     }
     return tmp;
-  }, [max, disabled, itemStyle, value, readOnly, className]);
-
-  const rating = getStars();
+  }, [max, disabled, itemStyle, value, readOnly, className, onChange]);
 
   return (
     <Tooltip id='tooltip-icon' classes={{tooltip: cx(classes.tooltip, props.containerClass)}} title={hoverValue || value} placement={props.tooltipPosition}>

@@ -25,33 +25,32 @@
   },
   "homepage": "https://github.com/TeamWertarbyte/material-ui-rating#readme",
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.0.0",
+    "@babel/cli": "^7.4.3",
+    "@babel/core": "^7.4.3",
     "@babel/plugin-proposal-export-default-from": "^7.2.0",
-    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-env": "^7.4.3",
     "@babel/preset-react": "^7.0.0",
-    "@material-ui/core": "^3.9.1",
-    "@material-ui/icons": "^3.0.2",
-    "@material-ui/styles": "^3.0.0-alpha.10",
+    "@material-ui/core": "^4.0.0-alpha.7",
+    "@material-ui/icons": "^4.0.0-alpha.1",
+    "@material-ui/styles": "^4.0.0-alpha.7",
     "@webpack-blocks/babel6": "^0.4.1",
     "@webpack-blocks/postcss": "^0.4.3",
     "@webpack-blocks/webpack2": "^0.4.0",
-    "gh-pages": "^1.0.0",
-    "jest": "^24.1.0",
-    "prop-types": "^15.7.1",
+    "gh-pages": "^1.2.0",
+    "jest": "^24.0.0",
+    "prop-types": "^15.7.2",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
-    "react-styleguidist": "^5.2.1",
     "react-test-renderer": "^16.8.1"
   },
   "peerDependencies": {
-    "@material-ui/core": "^3.7.0",
-    "@material-ui/icons": "^3.0.0",
-    "@material-ui/styles": "^3.0.0-alpha.10",
+    "@material-ui/core": "^4.0.0-alpha.7",
+    "@material-ui/icons": "^4.0.0-alpha.1",
+    "@material-ui/styles": "^4.0.0-alpha.7",
     "react": "^16.8.1",
     "react-dom": "^16.8.1"
   },
   "dependencies": {
-    "clsx": "^1.0.1"
+    "clsx": "^1.0.4"
   }
 }
